@@ -129,14 +129,15 @@ const Bootloader = () => {
           : _a.removeChild(oldAsset));
       // create new asset
 
-      //DIRTY HACK to avoid blob url import
-      // const objectURL = URL.createObjectURL(blob);
-      // const tag = js
-      //   ? _this.createScriptTag(objectURL, assetId)
-      //   : _this.createCssTag(objectURL, assetId);
+      const objectURL = URL.createObjectURL(blob);
       const tag = js
-        ? _this.createScriptTag(asset.file, assetId)
-        : _this.createCssTag(asset.file, assetId);
+        ? _this.createScriptTag(objectURL, assetId)
+        : _this.createCssTag(objectURL, assetId);
+
+      //DIRTY HACK to avoid blob url import
+      // const tag = js
+      //   ? _this.createScriptTag(asset.file, assetId)
+      //   : _this.createCssTag(asset.file, assetId);
       // ----------
 
       tag.onload = tag.onerror = () => {

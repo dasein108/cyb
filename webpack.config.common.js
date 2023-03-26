@@ -1,18 +1,16 @@
 const path = require('path');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const Dotenv = require('dotenv-webpack');
 const BootloaderPlugin = require('./src/components/loader/webpack-loader');
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
-// const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
-//   template: path.join(__dirname, 'src', 'index.html'),
-//   favicon: 'src/image/favicon.ico',
-//   filename: 'index.html',
-//   inject: 'body',
-// });
+if (process.env.IPFS_DEPLOY) {
+  // eslint-disable-next-line no-console
+  console.log('*** IPFS Version ***');
+}
 
 module.exports = {
   devtool: false,
@@ -37,10 +35,7 @@ module.exports = {
       os: require.resolve('os-browserify/browser'),
       http: require.resolve('stream-http'),
       stream: require.resolve('stream-browserify'),
-      // "path": require.resolve("path-browserify"),
-      // "zlib": require.resolve("browserify-zlib"),
       constants: require.resolve('constants-browserify'),
-      // "os": require.resolve("os-browserify")
     },
     extensions: ['*', '.js', '.jsx', '.scss', '.svg', '.css', '.json'],
     alias: {
@@ -75,6 +70,11 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css',
+    }),
+    new webpack.DefinePlugin({
+      'process.env.REACT_APP_IPFS_DEPLOY': JSON.stringify(
+        process.env.IPFS_DEPLOY
+      ),
     }),
     new Dotenv({
       systemvars: true,
@@ -135,17 +135,11 @@ module.exports = {
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        // use: ['file-loader'],
         type: 'asset/resource',
       },
       {
         test: /\.(ogg|mp3|wav|mpe?g)$/i,
         type: 'asset/resource',
-
-        // loader: 'file-loader',
-        // options: {
-        //   name: '[path][name].[ext]',
-        // },
       },
       {
         test: /\.(jpe?g|png|gif|svg|ico)$/i,

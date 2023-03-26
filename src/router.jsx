@@ -65,7 +65,7 @@ import defaultNetworks from './utils/defaultNetworks';
 
 import { TIME_START, CYBER } from './utils/config';
 import ipfsSettings from './containers/ipfsSettings';
-import { Link } from 'react-router-dom';
+import { Link, HashRouter } from 'react-router-dom';
 
 export const history = createBrowserHistory({});
 
@@ -95,9 +95,17 @@ const oldLinks = {
   mint: '/mint',
 };
 
+function WrappedRouter({ children }) {
+  return process.env.IPFS_DEPLOY ? (
+    <HashRouter history={history}>{children}</HashRouter>
+  ) : (
+    <Router history={history}>{children}</Router>
+  );
+}
+
 function AppRouter() {
   return (
-    <IpfsRouter history={history}>
+    <WrappedRouter history={history}>
       <Route path={routes.home.path} component={() => <App />} />
       <Switch>
         <Route path="/" exact component={Temple} />
@@ -189,7 +197,7 @@ function AppRouter() {
           }}
         />
       </Switch>
-    </IpfsRouter>
+    </WrappedRouter>
   );
 }
 
